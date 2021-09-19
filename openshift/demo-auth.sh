@@ -51,7 +51,7 @@ function watch_deploy()
 
 }
 
-rand_name=$(head /dev/urandom | tr -dc a-z0-9 | head -c 4 ; echo '')
+rand_name=$(openssl rand -hex 4)
 
 project_name=krb-ex-$rand_name
 
@@ -64,10 +64,9 @@ oc new-app -f example-client-deploy.yaml -p PREFIX=test -p KDC_SERVER=test
 watch_deploy test $project_name
 watch_deploy test-example-app $project_name
 
-server_pod=$(oc get pod -l app=krb5-server -o name)
+server_pod=$(oc get pods -l deploymentconfig=test -o name)
 admin_pwd=$(oc logs -c kdc $server_pod | head -n 1 | sed 's/.*Your\ KDC\ password\ is\ //')
-
-app_pod=$(oc get pods -l app=client -o name)
+app_pod=$(oc get pods -l deploymentconfig=test-example-app -o name)
 
 principal=$(oc set env $app_pod --list | grep OPTIONS | grep -o "[a-z]*\@[A-Z\.]*")
 realm=$(echo $principal | sed 's/[a-z]*\@//')
