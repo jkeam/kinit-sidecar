@@ -94,10 +94,6 @@ objects:
           - mountPath: /etc/krb5.conf.d
             name: config
           env:
-          - name: ASPNETCORE_URLS
-            value: "https://+;http://+"
-          - name: ASPNETCORE_HTTPS_PORT
-            value: "5001"
           - name: KRB5_KTNAME
             value: /krb5/krb5.keytab
         dnsPolicy: ClusterFirst
